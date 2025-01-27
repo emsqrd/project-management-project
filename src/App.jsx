@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import Project from './components/Project';
 import ProjectSidebar from './components/ProjectSidebar';
 
@@ -7,10 +8,27 @@ const project = {
   dueDate: '',
 };
 
+const projects = [];
+
 function App() {
+  const [projects, setProjects] = useState([
+    {
+      id: 1,
+      title: 'New Project',
+      description: 'My new project',
+      dueDate: new Date('2025-01-02'),
+    },
+    {
+      id: 2,
+      title: 'New Project 2',
+      description: 'My new project 2',
+      dueDate: new Date('2025-01-02'),
+    },
+  ]);
+
   return (
     <main className="h-screen my-8 flex gap-8">
-      <ProjectSidebar />
+      <ProjectSidebar projects={projects} />
       <Project />
     </main>
   );
