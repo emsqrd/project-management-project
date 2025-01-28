@@ -11,6 +11,7 @@ const project = {
 const projects = [];
 
 function App() {
+  const [showForm, setShowForm] = useState(false);
   const [projects, setProjects] = useState([
     {
       id: 1,
@@ -26,10 +27,16 @@ function App() {
     },
   ]);
 
+  const newProjectForm = useRef();
+
+  function handleNewProjectClick() {
+    setShowForm(true);
+  }
+
   return (
     <main className="h-screen my-8 flex gap-8">
-      <ProjectSidebar projects={projects} />
-      <Project />
+      <ProjectSidebar onNewProjectClick={handleNewProjectClick} projects={projects} />
+      <Project onNewProjectClick={handleNewProjectClick} showForm={showForm} />
     </main>
   );
 }
