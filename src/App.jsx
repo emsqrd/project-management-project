@@ -12,31 +12,27 @@ const projects = [];
 
 function App() {
   const [showForm, setShowForm] = useState(false);
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      title: 'New Project',
-      description: 'My new project',
-      dueDate: new Date('2025-01-02'),
-    },
-    {
-      id: 2,
-      title: 'New Project 2',
-      description: 'My new project 2',
-      dueDate: new Date('2025-01-02'),
-    },
-  ]);
+  const [projects, setProjects] = useState([]);
 
-  const newProjectForm = useRef();
+  function handleNewProjectClick(show = true) {
+    setShowForm(show);
+  }
 
-  function handleNewProjectClick() {
-    setShowForm(true);
+  function handleSubmitNewProject(formData) {
+    const newProject = {
+      id: Math.random(),
+      title: formData.get('title'),
+      description: formData.get('description'),
+      dueDate: new Date(formData.get('dueDate')),
+    };
+    setProjects((prevProjects) => [...prevProjects, newProject]);
+    setShowForm(false);
   }
 
   return (
     <main className="h-screen my-8 flex gap-8">
       <ProjectSidebar onNewProjectClick={handleNewProjectClick} projects={projects} />
-      <Project onNewProjectClick={handleNewProjectClick} showForm={showForm} />
+      <Project onNewProjectClick={handleNewProjectClick} onSubmitNewProject={handleSubmitNewProject} showForm={showForm} />
     </main>
   );
 }
