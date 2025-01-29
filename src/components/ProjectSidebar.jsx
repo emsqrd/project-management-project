@@ -1,4 +1,4 @@
-export default function ProjectSidebar({ onNewProjectClick, projects }) {
+export default function ProjectSidebar({ onNewProjectClick, projects, handleSelectProjectClick }) {
   const projectList = projects;
 
   return (
@@ -11,7 +11,11 @@ export default function ProjectSidebar({ onNewProjectClick, projects }) {
         + Add Project
       </button>
       {projectList.map((project) => (
-        <button key={project.id} className="w-full text-left px-2 py-1 rounded-sm my-1 hover:text-stone-200 hover:bg-stone-800">
+        <button
+          onClick={() => handleSelectProjectClick(project.id)}
+          key={project.id}
+          className="w-full text-left px-2 py-1 rounded-sm my-1 hover:text-stone-200 hover:bg-stone-800"
+        >
           {project.title}
         </button>
       ))}
