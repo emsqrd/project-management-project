@@ -19,9 +19,9 @@ export default function ProjectForm({ onCancelButtonClick, onSubmitNewProject })
         </button>
       </div>
 
-      <ProjectFormDetail label="Title" inputType="text" />
-      <ProjectFormDetail detailContainer="textarea" label="Description" />
-      <ProjectFormDetail label="Due Date" inputType="date" />
+      <ProjectFormDetail label="Title" name="title" inputType="text" />
+      <ProjectFormDetail label="Description" name="description" detailContainer="textarea" />
+      <ProjectFormDetail label="Due Date" name="dueDate" inputType="date" />
     </form>
   );
 }
