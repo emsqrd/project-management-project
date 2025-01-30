@@ -10,7 +10,7 @@ export default function ProjectSidebar({ onNewProjectClick, projects, handleSele
       >
         + Add Project
       </button>
-      {projectList.map((project) => (
+      {projectList?.map((project) => (
         <button
           onClick={() => handleSelectProjectClick(project.id)}
           key={project.id}

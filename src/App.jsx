@@ -6,15 +6,16 @@ import Project from './components/Project';
 import ProjectSidebar from './components/ProjectSidebar';
 import ProjectForm from './components/ProjectForm';
 
-const project = {
-  title: '',
-  description: '',
-  dueDate: '',
-};
-
 function App() {
   const [showForm, setShowForm] = useState(false);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState([
+    {
+      id: 1,
+      title: 'Learning React',
+      description: 'Learn the basics from the ground up.\n\nThen focus on more advanced techniques.',
+      dueDate: '12/31/2025',
+    },
+  ]);
   const [selectedProject, setSelectedProject] = useState(null);
 
   function handleNewProjectClick(show = true) {
@@ -41,6 +42,11 @@ function App() {
     setShowForm(false);
   }
 
+  function handleDeleteProject(id) {
+    setProjects((prevProjects) => prevProjects.filter((project) => project.id !== id));
+    setSelectedProject(null);
+  }
+
   function selectProject(id) {
     const selectedProject = projects.find((project) => project.id === id);
     setSelectedProject(selectedProject);
@@ -65,8 +71,8 @@ function App() {
       <ProjectSidebar onNewProjectClick={handleNewProjectClick} projects={projects} handleSelectProjectClick={selectProject} />
       <div className="w-[35rem] mt-16">
         {!showForm && !selectedProject && noProject}
-        {showForm && <ProjectForm onCancelButtonClick={handleCloseProjectForm} onSubmitNewProject={handleSubmitNewProject} />}
-        {selectedProject && <Project project={selectedProject} />}
+        {showForm && !selectedProject && <ProjectForm onCancelButtonClick={handleCloseProjectForm} onSubmitNewProject={handleSubmitNewProject} />}
+        {selectedProject && <Project project={selectedProject} onDeleteProject={handleDeleteProject} />}
       </div>
     </main>
   );
