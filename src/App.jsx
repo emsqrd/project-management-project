@@ -8,14 +8,7 @@ import ProjectForm from './components/ProjectForm';
 
 function App() {
   const [showForm, setShowForm] = useState(false);
-  const [projects, setProjects] = useState([
-    {
-      id: 1,
-      title: 'Learning React',
-      description: 'Learn the basics from the ground up.\n\nThen focus on more advanced techniques.',
-      dueDate: '12/31/2025',
-    },
-  ]);
+  const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
 
   function handleNewProjectClick(show = true) {
