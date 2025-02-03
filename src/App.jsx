@@ -1,72 +1,140 @@
 import { useState } from 'react';
 
-import noProjectsImg from './assets/no-projects.png';
-
 import Project from './components/Project';
 import ProjectSidebar from './components/ProjectSidebar';
-import ProjectForm from './components/ProjectForm';
+import NewProject from './components/NewProject';
+import NoProjectSelected from './components/NoProjectSelected';
 
 function App() {
-  const [showForm, setShowForm] = useState(false);
-  const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [projectsState, setProjectsState] = useState({
+    selectedProjectId: undefined,
+    projects: [],
+    tasks: [],
+  });
 
-  function handleNewProjectClick(show = true) {
-    setSelectedProject(false);
-    setShowForm(show);
+  function handleNewProjectClick() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: null,
+      };
+    });
+  }
+
+  function handleAddTask(text) {
+    setProjectsState((prevState) => {
+      const taskId = Math.random();
+      const newTask = {
+        text: text,
+        projectId: prevState.selectedProjectId,
+        id: taskId,
+      };
+
+      return {
+        ...prevState,
+        tasks: [...prevState.tasks, newTask],
+      };
+    });
+  }
+
+  function handleDeleteTask(id) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        tasks: prevState.tasks.filter((task) => task.id !== id),
+      };
+    });
   }
 
   function handleCloseProjectForm() {
-    setShowForm(false);
+    setProjectsState((prevState) => prevState.selectedProjectId === undefined);
   }
 
-  function handleSubmitNewProject(formData) {
-    const newProject = {
-      id: Math.random(),
-      title: formData.get('title'),
-      description: formData.get('description'),
-      dueDate: new Date(formData.get('dueDate')).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
-    };
-    setProjects((prevProjects) => [...prevProjects, newProject]);
-    setShowForm(false);
+  function handleAddProject(projectData) {
+    // const newProject = {
+    //   id: Math.random(),
+    //   title: formData.get('title'),
+    //   description: formData.get('description'),
+    //   dueDate: new Date(formData.get('dueDate')).toLocaleDateString('en-US', {
+    //     year: 'numeric',
+    //     month: 'long',
+    //     day: 'numeric',
+    //   }),
+    // };
+
+    setProjectsState((prevState) => {
+      const projectId = Math.random();
+      const newProject = {
+        ...projectData,
+        id: projectId,
+      };
+
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: [...prevState.projects, newProject],
+      };
+    });
   }
 
-  function handleDeleteProject(id) {
-    setProjects((prevProjects) => prevProjects.filter((project) => project.id !== id));
-    setSelectedProject(null);
+  function handleCancelAddProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+      };
+    });
   }
 
-  function selectProject(id) {
-    const selectedProject = projects.find((project) => project.id === id);
-    setSelectedProject(selectedProject);
+  function handleDeleteProject() {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: undefined,
+        projects: prevState.projects.filter((project) => project.id !== prevState.selectedProjectId),
+      };
+    });
   }
 
-  const noProject = (
-    <div className="text-center">
-      <img className="w-16 h-16 object-contain mx-auto" src={noProjectsImg} alt="image of a clipboard and pen" />
-      <h2 className="text-xl font-bold text-stone-700 my-4">No Project Selected</h2>
-      <p className="text-stone-400 mb-4">Select a project or get started with a new one</p>
-      <button
-        className="px-4 py-2 text-xs md:text-base rounded-md bg-stone-700 text-stone-400 hover:bg-stone-600 hover:text-stone-100"
-        onClick={handleNewProjectClick}
-      >
-        Create New Project
-      </button>
-    </div>
-  );
+  function handleSelectProject(id) {
+    setProjectsState((prevState) => {
+      return {
+        ...prevState,
+        selectedProjectId: id,
+      };
+    });
+  }
+
+  const selectedProject = projectsState.projects.find((project) => project.id === projectsState.selectedProjectId);
+  let content;
+
+  if (projectsState.selectedProjectId === null) {
+    content = (
+      <NewProject onCancelButtonClick={handleCloseProjectForm} onAddNewProject={handleAddProject} onCancelAddNewProject={handleCancelAddProject} />
+    );
+  } else if (projectsState.selectedProjectId === undefined) {
+    content = <NoProjectSelected handleNewProjectClick={handleNewProjectClick} />;
+  } else {
+    content = (
+      <Project
+        project={selectedProject}
+        onDeleteProject={handleDeleteProject}
+        onAddTask={handleAddTask}
+        onDeleteTask={handleDeleteTask}
+        tasks={projectsState.tasks}
+      />
+    );
+  }
 
   return (
     <main className="h-screen my-8 flex gap-8">
-      <ProjectSidebar onNewProjectClick={handleNewProjectClick} projects={projects} handleSelectProjectClick={selectProject} />
-      <div className="w-[35rem] mt-16">
-        {!showForm && !selectedProject && noProject}
-        {showForm && !selectedProject && <ProjectForm onCancelButtonClick={handleCloseProjectForm} onSubmitNewProject={handleSubmitNewProject} />}
-        {selectedProject && <Project project={selectedProject} onDeleteProject={handleDeleteProject} />}
-      </div>
+      <ProjectSidebar
+        onNewProjectClick={handleNewProjectClick}
+        projects={projectsState.projects}
+        onSelectProject={handleSelectProject}
+        selectedProjectId={projectsState.selectedProjectId}
+      />
+      {content}
     </main>
   );
 }

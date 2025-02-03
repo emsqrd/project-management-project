@@ -1,14 +1,13 @@
-export default function ProjectFormDetail({ label, inputType, name, detailContainer = 'input' }) {
+export default function ProjectDetail({ label, inputType, inputRef, detailContainer = 'input' }) {
   const DetailContainer = detailContainer;
   return (
-    <div className="mt-2">
+    <p className="flex flex-col gap-1 my-4">
       <label className="text-sm font-bold uppercase text-stone-500">{label}</label>
       <DetailContainer
-        required
-        name={name}
+        ref={inputRef}
         className="w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
         type={inputType}
       />
-    </div>
+    </p>
   );
 }
